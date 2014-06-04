@@ -1,6 +1,4 @@
 from django.db import models
-from django.core.exceptions import MultipleObjectsReturned
-from django.contrib.contenttypes.models import ContentType
 from tagging.models import *
 
 
@@ -27,13 +25,14 @@ class TagManager(models.Manager):
         :param obj: Item (generic) instance
         :**kwargs: Tag lookup parameters
         """
-        tags = Tag.objects.get(**kwargs)
-        for tag in tags:
-            tagged = TaggedItem(tag_id=tag.tag_id, content_object=obj)
-            tagged.save()
+        tag = Tag.objects.get(**kwargs)
+        tagged = TaggedItem(tag_id=tag.tag_id, content_object=obj)
+        tagged.save()
 
-    def get(self, obj, lang=None):
+    def filter(self, obj, lang=None):
         """Returns a list of all tags binded with the obj.
+
+        Attention: Does NOT return a QuerySet
 
         If the optional lang parameter is provided, returns
         only the tags in given language.
@@ -59,7 +58,7 @@ class TagManager(models.Manager):
         :param obj: Item (generic) instance
         :**kwargs: Tag lookup parameters
         """
-        tags = Tag.objects.get(**kwargs)
-        for tag in tags:
-            tagged = TaggedItem(tag_id=tag.tag_id, content_object=obj)
-            tagged.delete()
+        tag = Tag.objects.get(**kwargs)
+        ctype = ContentType.objects.get_for_model(obj)
+        tagged = TaggedItem.objects.get(tag_id=tag.tag_id, content_type_id=ctype.id)
+        tagged.delete()

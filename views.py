@@ -7,6 +7,7 @@ from tagging.utils import import_tags_csv
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 
+
 def import_tags(request):
     """Provides graphical interface to tagging.utils.import_tags_csv"""
     if request.method == 'POST':

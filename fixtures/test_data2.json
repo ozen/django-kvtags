@@ -1,0 +1,189 @@
+[{
+    "pk": 1,
+    "model": "tests.item",
+    "fields": {
+        "name": "ali"
+    }
+},{
+    "pk": 2,
+    "model": "tests.item",
+    "fields": {
+        "name": "veli"
+    }
+},{
+    "pk": 1,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "en",
+        "value": "red",
+        "tag_id": 1
+    }
+}, {
+    "pk": 2,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "tr",
+        "value": "k\u0131rm\u0131z\u0131",
+        "tag_id": 1
+    }
+}, {
+    "pk": 3,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "fr",
+        "value": "rouge",
+        "tag_id": 1
+    }
+}, {
+    "pk": 4,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "en",
+        "value": "orange",
+        "tag_id": 2
+    }
+}, {
+    "pk": 5,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "tr",
+        "value": "turuncu",
+        "tag_id": 2
+    }
+}, {
+    "pk": 6,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "fr",
+        "value": "orange",
+        "tag_id": 2
+    }
+}, {
+    "pk": 7,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "en",
+        "value": "yellow",
+        "tag_id": 3
+    }
+}, {
+    "pk": 8,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "tr",
+        "value": "sar\u0131",
+        "tag_id": 3
+    }
+}, {
+    "pk": 9,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "fr",
+        "value": "jaune",
+        "tag_id": 3
+    }
+}, {
+    "pk": 10,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "en",
+        "value": "green",
+        "tag_id": 4
+    }
+}, {
+    "pk": 11,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "tr",
+        "value": "ye\u015fil",
+        "tag_id": 4
+    }
+}, {
+    "pk": 12,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "fr",
+        "value": "vert",
+        "tag_id": 4
+    }
+}, {
+    "pk": 13,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "en",
+        "value": "mum",
+        "tag_id": 5
+    }
+}, {
+    "pk": 14,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "tr",
+        "value": "anne",
+        "tag_id": 5
+    }
+}, {
+    "pk": 15,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "fr",
+        "value": "maman",
+        "tag_id": 5
+    }
+}, {
+    "pk": 16,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "en",
+        "value": "candle",
+        "tag_id": 6
+    }
+}, {
+    "pk": 17,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "tr",
+        "value": "mum",
+        "tag_id": 6
+    }
+}, {
+    "pk": 18,
+    "model": "tagging.tag",
+    "fields": {
+        "lang": "fr",
+        "value": "bougie",
+        "tag_id": 6
+    }
+}, {
+    "pk": 1,
+    "model": "tagging.taggeditem",
+    "fields": {
+        "tag_id": 5,
+        "object_id": 1,
+        "content_type": 1
+    }
+}, {
+    "pk": 2,
+    "model": "tagging.taggeditem",
+    "fields": {
+        "tag_id": 6,
+        "object_id": 1,
+        "content_type": 1
+    }
+}, {
+    "pk": 3,
+    "model": "tagging.taggeditem",
+    "fields": {
+        "tag_id": 1,
+        "object_id": 2,
+        "content_type": 1
+    }
+}, {
+    "pk": 4,
+    "model": "tagging.taggeditem",
+    "fields": {
+        "tag_id": 2,
+        "object_id": 2,
+        "content_type": 1
+    }
+}]

@@ -32,7 +32,7 @@ class Tag(models.Model):
         super(Tag, self).save(*args, **kwargs)
 
     class Meta:
-        unique_together = (('tag_id','lang'))
+        unique_together = (('tag_id', 'lang'),)
 
 
 class TaggedItem(models.Model):
@@ -50,5 +50,16 @@ class TaggedItem(models.Model):
     content_object = GenericForeignKey()
 
     def get_tags(self, **kwargs):
-        """Returns a list of associated tags"""
         return Tag.objects.filter(tag_id=self.tag_id, **kwargs)
+
+    def get_tag(self, lang=None):
+        if lang is None:
+            try:
+                return Tag.objects.filter(tag_id=self.tag_id)[0]
+            except:
+                return None
+        else:
+            try:
+                return Tag.objects.get(tag_id=self.tag_id, lang=lang)
+            except:
+                return None

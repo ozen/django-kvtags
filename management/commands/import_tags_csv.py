@@ -1,8 +1,5 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.management.base import BaseCommand, CommandError
-from tagging.models import Tag
+from django.core.management.base import BaseCommand
 from tagging.utils import import_tags_csv
-import unicodecsv
 
 
 class Command(BaseCommand):
