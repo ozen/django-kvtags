@@ -23,8 +23,6 @@ if not settings.configured:
     pass
 
 def runtests():
-    upper_dir = os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-    sys.path.append(upper_dir)
     argv = sys.argv[:1] + ['test'] + sys.argv[1:]
     execute_from_command_line(argv)
 
