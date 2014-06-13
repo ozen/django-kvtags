@@ -9,7 +9,7 @@ class TagResource(ModelResource):
         queryset = Tag.objects.all()
         filtering = {
             "tag_group": ALL,
-            "lang": ALL,
+            "key": ALL,
             "value": ALL
         }
 

@@ -6,8 +6,8 @@ Grouped tagging system for Django.
 
 Tags have keys and groups, so that you can link several tags together.
 
-This is especially useful for adding translations of the tags without modifying
-relations between tagged items.
+This is especially useful for adding translations of tags without
+modifying relations between tagged items.
 
 TagManager
 ============
