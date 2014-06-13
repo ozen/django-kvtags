@@ -13,3 +13,4 @@ pip-log.txt
 .idea/
 *.egg
 *.egg-info
+MANIFEST
