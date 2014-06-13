@@ -1,4 +1,3 @@
-from django.db import models
 from tagging.models import *
 
 
@@ -20,17 +19,17 @@ class TagManager(models.Manager):
         """Adds the tags matched by kwargs to obj.
 
         Throws MultipleObjectsReturned exception if lookup
-        paramaters are not strict enough to provide uniqueness.
+        parameters are not strict enough to provide uniqueness.
 
         :param obj: Item (generic) instance
-        :**kwargs: Tag lookup parameters
+        :param **kwargs: Tag lookup parameters
         """
         tag = Tag.objects.get(**kwargs)
         tagged = TaggedItem(tag_id=tag.tag_id, content_object=obj)
         tagged.save()
 
     def filter(self, obj, lang=None):
-        """Returns a list of all tags binded with the obj.
+        """Returns a list of all tags bound with the obj.
 
         Attention: Does NOT return a QuerySet
 
@@ -50,13 +49,13 @@ class TagManager(models.Manager):
         return all_tags
 
     def remove(self, obj, **kwargs):
-        """Removes the tags matched by kwargs to obj.
+        """Removes the tags matched by kwargs from obj.
 
         Throws MultipleObjectsReturned exception if lookup
-        paramaters are not strict enough to provide uniqueness.
+        parameters are not strict enough to provide uniqueness.
 
         :param obj: Item (generic) instance
-        :**kwargs: Tag lookup parameters
+        :param **kwargs: Tag lookup parameters
         """
         tag = Tag.objects.get(**kwargs)
         ctype = ContentType.objects.get_for_model(obj)

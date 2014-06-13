@@ -3,7 +3,7 @@ from tagging.models import Tag
 import unicodecsv
 
 
-def import_tags_csv(csvfile):
+def import_tags_csv(csv_file):
     """Imports tags from a csv file to the database.
 
     A file instance must be provided as an argument.
@@ -13,9 +13,9 @@ def import_tags_csv(csvfile):
     Subsequent rows are tags.
     Each row corresponds to a tag with each field is a translation.
 
-    :param csvfile: opened csv file instance
+    :param csv_file: opened csv file instance
     """
-    reader = unicodecsv.reader(csvfile, encoding='utf-8')
+    reader = unicodecsv.reader(csv_file, encoding='utf-8')
     langs = reader.next()
 
     for row in reader:

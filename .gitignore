@@ -1,2 +1,3 @@
 *.pyc
 imcom_django_tagging.egg-info/
+.idea/
