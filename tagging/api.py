@@ -8,7 +8,7 @@ class TagResource(ModelResource):
     class Meta:
         queryset = Tag.objects.all()
         filtering = {
-            "tag_id": ALL,
+            "tag_group": ALL,
             "lang": ALL,
             "value": ALL
         }

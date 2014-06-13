@@ -24,60 +24,46 @@ class TimeStamped(models.Model):
 class Tag(TimeStamped):
     """Defines generic tags.
 
-    Provides tag_id and lang fields with tags to support
-    translations into different languages.
-    Each translation of a tag is a distinct Tag instance.
+    Provides tag_group and key fields to support intra-related tags.
 
-    Translations of the same tag have the same tag_id.
-    Tags have lang code based on their languages.
-    tag_id and lang pairs are unique in the table.
+    Tags in the same group have the same tag_group value.
+    Tags have keys based on their variations in their groups.
+    tag_group and key pairs are unique in the table.
     """
-    tag_id = models.IntegerField()
-    lang = models.SlugField(db_index=True)
+    tag_group = models.IntegerField()
+    key = models.SlugField(db_index=True)
     value = models.TextField()
 
     def __unicode__(self):
         return self.value
 
     def save(self, *args, **kwargs):
-        if self.tag_id is None:
-            # auto increment tag_id if it is not present
+        if self.tag_group is None:
+            # auto increment tag_group if it is not present
             try:
-                top = Tag.objects.order_by('-tag_id')[0].tag_id
+                top = Tag.objects.order_by('-tag_group')[0].tag_group
             except IndexError:
                 top = 0
-            self.tag_id = top + 1
+            self.tag_group = top + 1
         super(Tag, self).save(*args, **kwargs)
 
     class Meta:
-        unique_together = (('tag_id', 'lang'),)
+        unique_together = (('tag_group', 'key'),)
 
 
 class TaggedItem(TimeStamped):
-    """Binds Tag with an item.
+    """Binds tags with items.
 
     Uses Django Generic Relations to bind tags with any model.
 
-    Uses tag_id of Tag to reference to tags (not foreign key)
+    Uses tag_group of Tag for referencing to tags (not foreign key)
     to reduce the number of relations, i.e. only one TaggedItem
-    exists for several translations of a tag of an item.
+    exists for several tags in the same group.
     """
-    tag_id = models.IntegerField()
+    tag_group = models.IntegerField()
     object_id = models.IntegerField(db_index=True, null=True)
     content_type = models.ForeignKey(ContentType, null=True)
     content_object = GenericForeignKey()
 
-    def get_tags(self, **kwargs):
-        return Tag.objects.filter(tag_id=self.tag_id, **kwargs)
-
-    def get_tag(self, lang=None):
-        if lang is None:
-            try:
-                return Tag.objects.filter(tag_id=self.tag_id)[0]
-            except:
-                return None
-        else:
-            try:
-                return Tag.objects.get(tag_id=self.tag_id, lang=lang)
-            except:
-                return None
+    class Meta:
+        unique_together = (('tag_group', 'object_id', 'content_type'),)

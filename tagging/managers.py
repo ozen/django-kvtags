@@ -27,7 +27,7 @@ class TagManager(models.Manager):
         """
         tag = Tag.objects.get(**kwargs)
         c_type = ContentType.objects.get_for_model(obj)
-        TaggedItem.objects.get_or_create(tag_id=tag.tag_id, content_type_id=c_type.id, object_id=obj.id)
+        TaggedItem.objects.get_or_create(tag_group=tag.tag_group, content_type_id=c_type.id, object_id=obj.id)
 
     @staticmethod
     def filter(obj, **kwargs):
@@ -40,8 +40,8 @@ class TagManager(models.Manager):
         :param **kwargs: Tag lookup parameters
         """
         c_type = ContentType.objects.get_for_model(obj)
-        items = TaggedItem.objects.filter(content_type_id=c_type.id, object_id=obj.id).values('tag_id')
-        return Tag.objects.filter(tag_id__in=items, **kwargs)
+        items = TaggedItem.objects.filter(content_type_id=c_type.id, object_id=obj.id).values('tag_group')
+        return Tag.objects.filter(tag_group__in=items, **kwargs)
 
     @staticmethod
     def remove(obj, **kwargs):
@@ -56,7 +56,7 @@ class TagManager(models.Manager):
         tag = Tag.objects.get(**kwargs)
         c_type = ContentType.objects.get_for_model(obj)
         try:
-            tagged = TaggedItem.objects.get(tag_id=tag.tag_id, content_type_id=c_type.id)
+            tagged = TaggedItem.objects.get(tag_group=tag.tag_group, content_type_id=c_type.id)
             tagged.delete()
         except TaggedItem.DoesNotExist:
             pass

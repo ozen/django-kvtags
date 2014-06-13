@@ -11,16 +11,16 @@ class ImportCSVTestCase(TestCase):
     def test_import_csv(self):
         with open(os.path.join(os.path.dirname(__file__), 'test.csv'), 'rb') as csv_file:
             import_tags_csv(csv_file)
-        self.assertEqual(Tag.objects.get(pk=1).tag_id, 1)
-        self.assertEqual(Tag.objects.get(pk=2).tag_id, 1)
-        self.assertEqual(Tag.objects.get(pk=3).tag_id, 1)
-        self.assertEqual(Tag.objects.get(pk=4).tag_id, 2)
-        self.assertEqual(Tag.objects.get(pk=5).tag_id, 2)
-        self.assertEqual(Tag.objects.get(pk=1).lang, 'en')
-        self.assertEqual(Tag.objects.get(pk=2).lang, 'tr')
-        self.assertEqual(Tag.objects.get(pk=3).lang, 'fr')
-        self.assertEqual(Tag.objects.get(pk=4).lang, 'en')
-        self.assertEqual(Tag.objects.get(pk=5).lang, 'tr')
+        self.assertEqual(Tag.objects.get(pk=1).tag_group, 1)
+        self.assertEqual(Tag.objects.get(pk=2).tag_group, 1)
+        self.assertEqual(Tag.objects.get(pk=3).tag_group, 1)
+        self.assertEqual(Tag.objects.get(pk=4).tag_group, 2)
+        self.assertEqual(Tag.objects.get(pk=5).tag_group, 2)
+        self.assertEqual(Tag.objects.get(pk=1).key, 'en')
+        self.assertEqual(Tag.objects.get(pk=2).key, 'tr')
+        self.assertEqual(Tag.objects.get(pk=3).key, 'fr')
+        self.assertEqual(Tag.objects.get(pk=4).key, 'en')
+        self.assertEqual(Tag.objects.get(pk=5).key, 'tr')
 
 
 class AddTagsTestCase(TestCase):
@@ -31,24 +31,26 @@ class AddTagsTestCase(TestCase):
 
     def test_tag_add_ex1(self):
         with self.assertRaises(MultipleObjectsReturned):
-            Item.tags.add(self.i, lang='en')
+            Item.tags.add(self.i, key='en')
 
     def test_tag_add_ex2(self):
         with self.assertRaises(MultipleObjectsReturned):
             Item.tags.add(self.i, value='mum')
 
     def test_tag_add(self):
-        Item.tags.add(self.i, lang='en', value='red')
+        Item.tags.add(self.i, key='en', value='red')
         ctype = ContentType.objects.get_for_model(self.i)
-        self.assertEqual(
-            TaggedItem.objects.filter(content_type_id=ctype.id, object_id=self.i.id)[0].get_tag('en').value, 'red')
-        self.assertEqual(
-            TaggedItem.objects.filter(content_type_id=ctype.id, object_id=self.i.id)[0].get_tag('tr').value, u'kırmızı')
+
+        tag_group = TaggedItem.objects.filter(content_type_id=ctype.id, object_id=self.i.id)[0].tag_group
+        tag = Tag.objects.get(tag_group=tag_group, key='en')
+        self.assertEqual(tag.value, 'red')
+        tag = Tag.objects.get(tag_group=tag_group, key='tr')
+        self.assertEqual(tag.value, u'kırmızı')
         self.assertEqual(len(Item.tags.filter(self.i)), 3)
 
         # don't add same tag twice
         count = TaggedItem.objects.count()
-        Item.tags.add(self.i, lang='en', value='red')
+        Item.tags.add(self.i, key='en', value='red')
         self.assertEqual(TaggedItem.objects.count(), count)
 
     def tearDown(self):
@@ -68,17 +70,17 @@ class RemoveTagsTestCase(TestCase):
 
     def test_tag_remove_ex1(self):
         with self.assertRaises(MultipleObjectsReturned):
-            Item.tags.remove(self.i, lang='en')
+            Item.tags.remove(self.i, key='en')
 
     def test_tag_remove_ex2(self):
         with self.assertRaises(MultipleObjectsReturned):
             Item.tags.remove(self.i, value='mum')
 
     def test_tag_remove(self):
-        tag_id = Tag.objects.get(lang='en', value='mum').tag_id
-        Item.tags.remove(self.i, lang='en', value='mum')
-        self.assertEqual(TaggedItem.objects.filter(tag_id=tag_id).count(), 0)
-        Item.tags.remove(self.i, lang='en', value='mum')
+        tag_group = Tag.objects.get(key='en', value='mum').tag_group
+        Item.tags.remove(self.i, key='en', value='mum')
+        self.assertEqual(TaggedItem.objects.filter(tag_group=tag_group).count(), 0)
+        Item.tags.remove(self.i, key='en', value='mum')
 
     def tearDown(self):
         del self.i
@@ -98,11 +100,11 @@ class FilterTagsTestCase(TestCase):
 
     def test_tag_filter(self):
         self.assertEqual(len(Item.tags.filter(self.i)), 6)
-        self.assertEqual(Item.tags.filter(self.i, lang='en')[0].value, 'mum')
-        self.assertEqual(Item.tags.filter(self.i, lang='tr')[1].value, 'mum')
+        self.assertEqual(Item.tags.filter(self.i, key='en')[0].value, 'mum')
+        self.assertEqual(Item.tags.filter(self.i, key='tr')[1].value, 'mum')
         self.assertEqual(len(Item.tags.filter(self.j)), 6)
-        self.assertEqual(Item.tags.filter(self.j, lang='en')[0].value, 'red')
-        self.assertEqual(Item.tags.filter(self.j, lang='tr')[1].value, 'turuncu')
+        self.assertEqual(Item.tags.filter(self.j, key='en')[0].value, 'red')
+        self.assertEqual(Item.tags.filter(self.j, key='tr')[1].value, 'turuncu')
 
     def tearDown(self):
         del self.i
