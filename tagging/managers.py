@@ -15,7 +15,8 @@ class TagManager(models.Manager):
     when using it:
         <model_class>.tags.get(<model_instance>)
     """
-    def add(self, obj, **kwargs):
+    @staticmethod
+    def add(obj, **kwargs):
         """Adds the tags matched by kwargs to obj.
 
         Throws MultipleObjectsReturned exception if lookup
@@ -25,26 +26,25 @@ class TagManager(models.Manager):
         :param **kwargs: Tag lookup parameters
         """
         tag = Tag.objects.get(**kwargs)
-        tagged = TaggedItem(tag_id=tag.tag_id, content_object=obj)
-        tagged.save()
+        c_type = ContentType.objects.get_for_model(obj)
+        TaggedItem.objects.get_or_create(tag_id=tag.tag_id, content_type_id=c_type.id, object_id=obj.id)
 
-    def filter(self, obj, lang=None):
+    @staticmethod
+    def filter(obj, **kwargs):
         """Returns QuerySet of all tags bound with the obj.
 
         If the optional lang parameter is provided, returns
         only the tags in given language.
 
         :param obj: Item (generic) instance
-        :param lang: Language code (Optional)
+        :param **kwargs: Tag lookup parameters
         """
-        ctype = ContentType.objects.get_for_model(obj)
-        items = TaggedItem.objects.filter(content_type_id=ctype.id, object_id=obj.id).values('tag_id')
-        if lang is None:
-            return Tag.objects.filter(tag_id__in=items)
-        else:
-            return Tag.objects.filter(tag_id__in=items, lang=lang)
+        c_type = ContentType.objects.get_for_model(obj)
+        items = TaggedItem.objects.filter(content_type_id=c_type.id, object_id=obj.id).values('tag_id')
+        return Tag.objects.filter(tag_id__in=items, **kwargs)
 
-    def remove(self, obj, **kwargs):
+    @staticmethod
+    def remove(obj, **kwargs):
         """Removes the tags matched by kwargs from obj.
 
         Throws MultipleObjectsReturned exception if lookup
@@ -54,6 +54,9 @@ class TagManager(models.Manager):
         :param **kwargs: Tag lookup parameters
         """
         tag = Tag.objects.get(**kwargs)
-        ctype = ContentType.objects.get_for_model(obj)
-        tagged = TaggedItem.objects.get(tag_id=tag.tag_id, content_type_id=ctype.id)
-        tagged.delete()
+        c_type = ContentType.objects.get_for_model(obj)
+        try:
+            tagged = TaggedItem.objects.get(tag_id=tag.tag_id, content_type_id=c_type.id)
+            tagged.delete()
+        except TaggedItem.DoesNotExist:
+            pass

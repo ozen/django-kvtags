@@ -18,7 +18,6 @@ setup(
         'tagging',
         'tagging.management',
         'tagging.management.commands',
-        'tagging.migrations',
         ],
     requires=[
         'Django>=1.5',
