@@ -8,5 +8,5 @@ class Command(BaseCommand):
     help = 'Imports tags from csv file to database'
 
     def handle(self, *args, **options):
-        with open(args[0], 'rb') as csvfile:
-            import_tags_csv(csvfile)
+        with open(args[0], 'rb') as csv_file:
+            import_tags_csv(csv_file)

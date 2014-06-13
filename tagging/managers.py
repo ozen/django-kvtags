@@ -29,9 +29,7 @@ class TagManager(models.Manager):
         tagged.save()
 
     def filter(self, obj, lang=None):
-        """Returns a list of all tags bound with the obj.
-
-        Attention: Does NOT return a QuerySet
+        """Returns QuerySet of all tags bound with the obj.
 
         If the optional lang parameter is provided, returns
         only the tags in given language.
@@ -39,14 +37,12 @@ class TagManager(models.Manager):
         :param obj: Item (generic) instance
         :param lang: Language code (Optional)
         """
-        all_tags = []
         ctype = ContentType.objects.get_for_model(obj)
-        for tagged_item in TaggedItem.objects.filter(content_type_id=ctype.id, object_id=obj.id):
-            if lang is None:
-                all_tags += tagged_item.get_tags()
-            else:
-                all_tags += tagged_item.get_tags(lang=lang)
-        return all_tags
+        items = TaggedItem.objects.filter(content_type_id=ctype.id, object_id=obj.id).values('tag_id')
+        if lang is None:
+            return Tag.objects.filter(tag_id__in=items)
+        else:
+            return Tag.objects.filter(tag_id__in=items, lang=lang)
 
     def remove(self, obj, **kwargs):
         """Removes the tags matched by kwargs from obj.

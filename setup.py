@@ -25,5 +25,6 @@ setup(
         'unicodecsv>=0.9.4'
     ],
     package_data={'tagging': ['templates/*']},
+    data_files=[("", ["LICENSE", "README.rst"])],
 )
 
