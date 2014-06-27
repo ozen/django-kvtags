@@ -13,11 +13,8 @@ def import_tags(request):
     if request.method == 'POST':
         form = ImportTagsForm(request.POST, request.FILES)
         if form.is_valid():
-            try:
-                import_tags_csv(request.FILES['file'])
-                messages.success(request, _("Yahoo! The csv is fucking loaded nigga!"))
-            except:
-                messages.error(request, _("File is invalid!"))
+            import_tags_csv(request.FILES['file'])
+            messages.success(request, _("Yahoo! The csv is fucking loaded nigga!"))
         else:
             messages.error(request, _("File is invalid!"))
         return HttpResponseRedirect(reverse('tagging_import_tags'))

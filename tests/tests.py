@@ -41,7 +41,7 @@ class AddTagsTestCase(TestCase):
         Item.tags.add(self.i, key='en', value='red')
         ctype = ContentType.objects.get_for_model(self.i)
 
-        tag_group = TaggedItem.objects.filter(content_type_id=ctype.id, object_id=self.i.id)[0].tag_group
+        tag_group = TaggedItem.objects.filter(content_type=ctype, object_id=self.i.id)[0].tag_group
         tag = Tag.objects.get(tag_group=tag_group, key='en')
         self.assertEqual(tag.value, 'red')
         tag = Tag.objects.get(tag_group=tag_group, key='tr')
@@ -62,10 +62,10 @@ class RemoveTagsTestCase(TestCase):
 
     def setUp(self):
         self.i = Item.objects.get(pk=1)
-        # we have to adjust content_type_id fields in test runtime
+        # we have to adjust content_type fields in test runtime
         ctype = ContentType.objects.get_for_model(Item)
         for tagged in TaggedItem.objects.all():
-            tagged.content_type_id = ctype.id
+            tagged.content_type = ctype
             tagged.save()
 
     def test_tag_remove_ex1(self):
@@ -92,10 +92,10 @@ class FilterTagsTestCase(TestCase):
     def setUp(self):
         self.i = Item.objects.get(pk=1)
         self.j = Item.objects.get(pk=2)
-        # we have to adjust content_type_id fields in test runtime
+        # we have to adjust content_type fields in test runtime
         ctype = ContentType.objects.get_for_model(Item)
         for tagged in TaggedItem.objects.all():
-            tagged.content_type_id = ctype.id
+            tagged.content_type = ctype
             tagged.save()
 
     def test_tag_filter(self):

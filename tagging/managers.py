@@ -5,19 +5,11 @@ class TagManager(models.Manager):
     """Provides an interface to the tagging system
 
     Models that use tags should add a TagManager.
-
-    Example:
-        from tagging.managers import TagManager
-
-    in the model:
-        tags = TagManager()
-
-    when using it:
-        <model_class>.tags.get(<model_instance>)
     """
+
     @staticmethod
     def add(obj, **kwargs):
-        """Adds the tags matched by kwargs to obj.
+        """Adds the tags matched by kwargs to obj along with their groups.
 
         Throws MultipleObjectsReturned exception if lookup
         parameters are not strict enough to provide uniqueness.
@@ -27,25 +19,48 @@ class TagManager(models.Manager):
         """
         tag = Tag.objects.get(**kwargs)
         c_type = ContentType.objects.get_for_model(obj)
-        TaggedItem.objects.get_or_create(tag_group=tag.tag_group, content_type_id=c_type.id, object_id=obj.id)
+        TaggedItem.objects.get_or_create(tag_group=tag.tag_group, content_type=c_type, object_id=obj.id)
 
     @staticmethod
-    def filter(obj, **kwargs):
-        """Returns QuerySet of all tags bound with the obj.
+    def add_group(obj, **kwargs):
+        """Adds the tag groups matched by kwargs to obj.
 
-        If the optional lang parameter is provided, returns
-        only the tags in given language.
+        Throws MultipleObjectsReturned exception if lookup
+        parameters are not strict enough to provide uniqueness.
+
+        :param obj: Item (generic) instance
+        :param **kwargs: TagGroup lookup parameters
+        """
+        group = TagGroup.objects.get(**kwargs)
+        c_type = ContentType.objects.get_for_model(obj)
+        TaggedItem.objects.get_or_create(tag_group=group, content_type=c_type, object_id=obj.id)
+
+
+    @staticmethod
+    def filter_tags(obj, **kwargs):
+        """Returns QuerySet of tags bound with the obj.
 
         :param obj: Item (generic) instance
         :param **kwargs: Tag lookup parameters
         """
         c_type = ContentType.objects.get_for_model(obj)
-        items = TaggedItem.objects.filter(content_type_id=c_type.id, object_id=obj.id).values('tag_group')
-        return Tag.objects.filter(tag_group__in=items, **kwargs)
+        groups = TaggedItem.objects.filter(content_type=c_type, object_id=obj.id).values('tag_group')
+        return Tag.objects.filter(tag_group__in=groups, **kwargs)
+
+    @staticmethod
+    def filter_groups(obj, **kwargs):
+        """Returns QuerySet of groups bound with the obj.
+
+        :param obj: Item (generic) instance
+        :param **kwargs: TagGroup lookup parameters
+        """
+        c_type = ContentType.objects.get_for_model(obj)
+        groups = TaggedItem.objects.filter(content_type=c_type, object_id=obj.id).values('tag_group')
+        return TagGroup.objects.filter(pk__in=groups, **kwargs)
 
     @staticmethod
     def remove(obj, **kwargs):
-        """Removes the tags matched by kwargs from obj.
+        """Removes the tags matched by kwargs from obj along with their groups.
 
         Throws MultipleObjectsReturned exception if lookup
         parameters are not strict enough to provide uniqueness.
@@ -56,7 +71,25 @@ class TagManager(models.Manager):
         tag = Tag.objects.get(**kwargs)
         c_type = ContentType.objects.get_for_model(obj)
         try:
-            tagged = TaggedItem.objects.get(tag_group=tag.tag_group, content_type_id=c_type.id)
+            tagged = TaggedItem.objects.get(tag_group=tag.tag_group, content_type=c_type)
+            tagged.delete()
+        except TaggedItem.DoesNotExist:
+            pass
+
+    @staticmethod
+    def remove_group(obj, **kwargs):
+        """Removes the tags matched by kwargs from obj along with their groups.
+
+        Throws MultipleObjectsReturned exception if lookup
+        parameters are not strict enough to provide uniqueness.
+
+        :param obj: Item (generic) instance
+        :param **kwargs: TagGroup lookup parameters
+        """
+        group = TagGroup.objects.get(**kwargs)
+        c_type = ContentType.objects.get_for_model(obj)
+        try:
+            tagged = TaggedItem.objects.get(tag_group=tag_group, content_type=c_type)
             tagged.delete()
         except TaggedItem.DoesNotExist:
             pass

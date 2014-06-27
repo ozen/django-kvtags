@@ -21,31 +21,28 @@ class TimeStamped(models.Model):
         super(TimeStamped, self).save(*args, **kwargs)
 
 
+class TagGroup(TimeStamped):
+    key = models.CharField(max_length=50, db_index=True)
+
+    def __unicode__(self):
+        return u"%s %d" % (self.key, self.pk)
+
+
 class Tag(TimeStamped):
     """Defines generic tags.
 
-    Provides tag_group and key fields to support intra-related tags.
+    Provides tag_group and key fields to support intrarelated tags.
 
     Tags in the same group have the same tag_group value.
     Tags have keys based on their variations in their groups.
     tag_group and key pairs are unique in the table.
     """
-    tag_group = models.IntegerField()
-    key = models.SlugField(db_index=True)
-    value = models.TextField()
+    tag_group = models.ForeignKey(TagGroup, related_name='tags')
+    key = models.CharField(max_length=50, db_index=True)
+    value = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return self.value
-
-    def save(self, *args, **kwargs):
-        if self.tag_group is None:
-            # auto increment tag_group if it is not present
-            try:
-                top = Tag.objects.order_by('-tag_group')[0].tag_group
-            except IndexError:
-                top = 0
-            self.tag_group = top + 1
-        super(Tag, self).save(*args, **kwargs)
+        return u"%s (%s - %s)" % (self.value, self.key, self.tag_group)
 
     class Meta:
         unique_together = (('tag_group', 'key'),)
@@ -60,10 +57,13 @@ class TaggedItem(TimeStamped):
     to reduce the number of relations, i.e. only one TaggedItem
     exists for several tags in the same group.
     """
-    tag_group = models.IntegerField()
-    object_id = models.IntegerField(db_index=True, null=True)
-    content_type = models.ForeignKey(ContentType, null=True)
-    content_object = GenericForeignKey()
+    tag_group = models.ForeignKey(TagGroup, related_name='items')
+    object_id = models.IntegerField(db_index=True)
+    content_type = models.ForeignKey(ContentType)
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         unique_together = (('tag_group', 'object_id', 'content_type'),)
+
+    def __unicode__(self):
+        return u"%s (%s)" % (self.content_object, self.tag_group)
