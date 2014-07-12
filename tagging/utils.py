@@ -28,7 +28,7 @@ def import_tags_csv(csv_file):
                 try:
                     key_value = KeyValue.objects.get(key=keys[index], value=value, tag__key=tag_key)
                     tag = key_value.tag
-                except Tag.DoesNotExist:
+                except KeyValue.DoesNotExist:
                     obj = KeyValue(key=keys[index], value=value)
                     news.append(obj)
             else:
