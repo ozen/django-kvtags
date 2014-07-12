@@ -5,5 +5,4 @@ from tagging.models import *
 
 
 admin.site.register(Tag)
-admin.site.register(TagGroup)
 admin.site.register(TaggedItem)
