@@ -42,7 +42,7 @@ class KeyValue(models.Model):
 
 class TaggedItem(TimeStamped):
     """Binds tags with items."""
-    tag = models.ForeignKey(Tag, related_name='items')
+    tag = models.ForeignKey(Tag, related_name='items', null=True)
     object_id = models.IntegerField(db_index=True)
     content_type = models.ForeignKey(ContentType)
     content_object = GenericForeignKey('content_type', 'object_id')
