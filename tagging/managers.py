@@ -19,10 +19,10 @@ class TagManager(models.Manager):
             TaggedItem.objects.get_or_create(tag=tag, content_type=c_type, object_id=obj.id)
 
     @staticmethod
-    def add_by_keyvalue(obj, **kwargs):
+    def add_by_kv(obj, **kwargs):
         c_type = ContentType.objects.get_for_model(obj)
-        for keyvalue in KeyValue.objects.filter(**kwargs):
-            TaggedItem.objects.get_or_create(tag=keyvalue.tag, content_type=c_type, object_id=obj.id)
+        for key_value in KeyValue.objects.filter(**kwargs):
+            TaggedItem.objects.get_or_create(tag=key_value.tag, content_type=c_type, object_id=obj.id)
 
     @staticmethod
     def remove(obj, **kwargs):
@@ -35,27 +35,29 @@ class TagManager(models.Manager):
                 pass
 
     @staticmethod
-    def remove_by_keyvalue(obj, **kwargs):
+    def remove_by_kv(obj, **kwargs):
         c_type = ContentType.objects.get_for_model(obj)
-        for keyvalue in KeyValue.objects.filter(**kwargs):
+        for key_value in KeyValue.objects.filter(**kwargs):
             try:
-                item = TaggedItem.objects.get(tag=keyvalue.tag, content_type=c_type, object_id=obj.id)
+                item = TaggedItem.objects.get(tag=key_value.tag, content_type=c_type, object_id=obj.id)
                 item.delete()
             except TaggedItem.DoesNotExist:
                 pass
 
     @staticmethod
     def get_list(obj):
+        """Returns a list of Tag model instances bound to given object"""
         c_type = ContentType.objects.get_for_model(obj)
         ret = []
 
         for item in TaggedItem.objects.filter(content_type=c_type, object_id=obj.id).values('tag'):
-            tag = Tag.objects.prefetch_related('keyvalues').get(pk=item['tag'])
+            tag = Tag.objects.prefetch_related('kv_pairs').get(pk=item['tag'])
             ret.append(tag)
 
         return ret
 
-    def get_serialized_list(self, obj):
+    def get_digest_list(self, obj):
+        """Returns a list of objects which contains digested data of Tags bound to given object"""
         c_type = ContentType.objects.get_for_model(obj)
 
         if self.CACHE:
@@ -79,9 +81,9 @@ class TagManager(models.Manager):
     @staticmethod
     def populate_tags_dictionary():
         tags = {}
-        for tag in Tag.objects.select_related().prefetch_related('keyvalues').all():
+        for tag in Tag.objects.select_related().prefetch_related('kv_pairs').all():
             obj = {'id': tag.id, 'key': tag.key}
-            for key_value in tag.keyvalues.all():
+            for key_value in tag.kv_pairs.all():
                 obj[key_value.key] = key_value.value
             tags[tag.id] = obj
         return tags

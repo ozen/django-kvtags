@@ -29,7 +29,7 @@ class Tag(TimeStamped):
 
 
 class KeyValue(models.Model):
-    tag = models.ForeignKey(Tag, related_name='keyvalues', db_index=True)
+    tag = models.ForeignKey(Tag, related_name='kv_pairs', db_index=True)
     key = models.CharField(max_length=50, db_index=True)
     value = models.CharField(max_length=100)
 

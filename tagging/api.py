@@ -1,13 +1,11 @@
-from tastypie.resources import ModelResource, Resource
+from tastypie.resources import ModelResource
 from tastypie.constants import ALL
-from tastypie.authorization import Authorization
-from tastypie.authentication import Authentication
 from tastypie import fields
 from tagging.models import *
 
 
 class TagResource(ModelResource):
-    keyvalues = fields.ToManyField('tagging.api.KeyValueResource', 'keyvalues', full=True)
+    kv_pairs = fields.ToManyField('tagging.api.KeyValueResource', 'kv_pairs', full=True)
 
     class Meta:
         queryset = Tag.objects.all()
@@ -20,6 +18,8 @@ class TagResource(ModelResource):
 
 
 class KeyValueResource(ModelResource):
+    tag = fields.ForeignKey(TagResource, 'tag')
+
     class Meta:
         queryset = KeyValue.objects.all()
         filtering = {
@@ -27,7 +27,7 @@ class KeyValueResource(ModelResource):
             "key": ALL,
             "value": ALL
         }
-        resource_name = 'keyvalue'
+        resource_name = 'tag-kv'
         include_resource_uri = False
 
 
