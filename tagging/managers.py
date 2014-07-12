@@ -44,19 +44,44 @@ class TagManager(models.Manager):
             except TaggedItem.DoesNotExist:
                 pass
 
-    def get_list(self, obj):
+    @staticmethod
+    def get_list(obj):
         c_type = ContentType.objects.get_for_model(obj)
-        tags = []
+        ret = []
 
         for item in TaggedItem.objects.filter(content_type=c_type, object_id=obj.id).values('tag'):
-            if self.CACHE:
-                tag = self.CACHE.get('tag_%s' % item.tag.pk, None)
-                if tag is None:
-                    tag = Tag.objects.prefetch_related('keyvalues').get(pk=item.tag.pk)
-                    self.CACHE.set('tag_%s' % item.tag.pk, tag)
+            tag = Tag.objects.prefetch_related('keyvalues').get(pk=item['tag'])
+            ret.append(tag)
+
+        return ret
+
+    def get_serialized_list(self, obj):
+        c_type = ContentType.objects.get_for_model(obj)
+
+        if self.CACHE:
+            tags = self.CACHE.get('tags')
+
+            if tags is None:
+                print "missed cache"
+                tags = self.populate_tags_dictionary()
+                self.CACHE.set('tags', tags)
             else:
-                tag = Tag.objects.prefetch_related('keyvalues').get(pk=item.tag.pk)
+                print "hit cache"
+        else:
+            tags = self.populate_tags_dictionary()
 
-            tags.append(tag)
+        ret = []
+        for item in TaggedItem.objects.filter(content_type=c_type, object_id=obj.id).values('tag'):
+            ret.append(tags[item['tag']])
 
+        return ret
+
+    @staticmethod
+    def populate_tags_dictionary():
+        tags = {}
+        for tag in Tag.objects.select_related().prefetch_related('keyvalues').all():
+            obj = {'id': tag.id, 'key': tag.key}
+            for key_value in tag.keyvalues.all():
+                obj[key_value.key] = key_value.value
+            tags[tag.id] = obj
         return tags
