@@ -3,39 +3,36 @@ from tastypie.constants import ALL
 from tastypie.authorization import Authorization
 from tastypie.authentication import Authentication
 from tastypie import fields
-
 from tagging.models import *
 
 
-class TagGroupResource(ModelResource):
-    tags = fields.ToManyField('tagging.api.TagResource', 'tags', full=True)
-
-    class Meta:
-        queryset = TagGroup.objects.all()
-        filtering = {
-            "key": ALL
-        }
-        resource_name = 'tag-group'
-        excludes = ['created', 'updated']
-        include_resource_uri = False
-
-
 class TagResource(ModelResource):
-    # tag_group = fields.ForeignKey(TagGroupResource, 'tag_group')
+    keyvalues = fields.ToManyField('tagging.api.KeyValueResource', 'keyvalues', full=True)
 
     class Meta:
         queryset = Tag.objects.all()
         filtering = {
-            "tag_group": ALL,
-            "key": ALL,
-            "value": ALL
+            "key": ALL
         }
+        resource_name = 'tag'
         excludes = ['created', 'updated']
         include_resource_uri = False
 
 
+class KeyValueResource(ModelResource):
+    class Meta:
+        queryset = KeyValue.objects.all()
+        filtering = {
+            "tag": ALL,
+            "key": ALL,
+            "value": ALL
+        }
+        resource_name = 'keyvalue'
+        include_resource_uri = False
+
+
 class TaggedItemResource(ModelResource):
-    tag_group = fields.ForeignKey(TagGroupResource, 'tag_group')
+    tag = fields.ForeignKey(TagResource, 'tag')
 
     class Meta:
         queryset = TaggedItem.objects.all()
