@@ -18,18 +18,21 @@ class TagManager(models.Manager):
 
     @staticmethod
     def add(obj, **kwargs):
+        """ Adds tags matched by kwargs to obj. """
         c_type = ContentType.objects.get_for_model(obj)
         for tag in Tag.objects.filter(**kwargs):
             TaggedItem.objects.get_or_create(tag=tag, content_type=c_type, object_id=obj.id)
 
     @staticmethod
     def add_by_kv(obj, **kwargs):
+        """ Adds tags whose key-values are matched by kwargs to obj. """
         c_type = ContentType.objects.get_for_model(obj)
         for key_value in KeyValue.objects.filter(**kwargs):
             TaggedItem.objects.get_or_create(tag=key_value.tag, content_type=c_type, object_id=obj.id)
 
     @staticmethod
     def remove(obj, **kwargs):
+        """ Removes tags matched by kwargs from obj. """
         c_type = ContentType.objects.get_for_model(obj)
         for tag in Tag.objects.filter(**kwargs):
             try:
@@ -40,6 +43,7 @@ class TagManager(models.Manager):
 
     @staticmethod
     def remove_by_kv(obj, **kwargs):
+        """ Removes tags whose key-values are matched by kwargs from obj. """
         c_type = ContentType.objects.get_for_model(obj)
         for key_value in KeyValue.objects.filter(**kwargs):
             try:
@@ -50,13 +54,14 @@ class TagManager(models.Manager):
 
     @staticmethod
     def filter(obj, **kwargs):
+        """ Returns QuerySet of Tags bound to obj and matched by kwargs. """
         c_type = ContentType.objects.get_for_model(obj)
         tag_ids = TaggedItem.objects.filter(object_id=obj.id, content_type=c_type).values('tag')
         return Tag.objects.filter(pk__in=tag_ids, **kwargs)
 
     @staticmethod
     def get_list(obj):
-        """Returns a list of Tag model instances bound to given object"""
+        """ Returns a list of Tag model instances bound to obj. """
         c_type = ContentType.objects.get_for_model(obj)
         ret = []
 
@@ -67,7 +72,7 @@ class TagManager(models.Manager):
         return ret
 
     def get_digest_list(self, obj):
-        """Returns a list of objects which contains digested data of Tags bound to given object"""
+        """ Returns a list of objects which contains digested data of Tags bound to obj. """
         c_type = ContentType.objects.get_for_model(obj)
         ret = []
 
@@ -76,11 +81,11 @@ class TagManager(models.Manager):
             item_tags = self.CACHE.get('item_tags')
 
             if tags is None:
-                tags = self.populate_tags_dictionary()
+                tags = self.build_tags_dictionary()
                 self.CACHE.set('tags', tags)
 
             if item_tags is None:
-                item_tags = self.populate_item_tag_lists_dictionary()
+                item_tags = self.build_item_tag_lists_dictionary()
                 self.CACHE.set('item_tags', item_tags)
 
             if c_type in item_tags and obj.id in item_tags[c_type]:
@@ -98,8 +103,8 @@ class TagManager(models.Manager):
         return ret
 
     @staticmethod
-    def populate_tags_dictionary():
-        """ This creates a dictionary for tags whose keys are tag IDs and values are digest tag objects. """
+    def build_tags_dictionary():
+        """ Builds a dictionary for tags whose keys are tag IDs and values are digest tag objects. """
         tags = {}
         for tag in Tag.objects.select_related().prefetch_related('kv_pairs').all():
             obj = {'id': tag.id, 'key': tag.key}
@@ -109,10 +114,10 @@ class TagManager(models.Manager):
         return tags
 
     @staticmethod
-    def populate_item_tag_lists_dictionary():
-        """ This creates a 2-level dictionary.
+    def build_item_tag_lists_dictionary():
+        """ Builds a 2-level dictionary.
         First level keys are content_types and second level keys are object_ids.
-        Values are list of tag IDs associated with that content_type and object_id pair.
+        Values are list of tag IDs bound to the objects with that content_type and object_id pair.
         """
         item_tags = {}
         for item in TaggedItem.objects.all():

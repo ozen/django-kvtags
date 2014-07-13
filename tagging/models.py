@@ -5,7 +5,7 @@ from django.utils.timezone import now
 
 
 class TimeStamped(models.Model):
-    """Provides created and updated timestamps on models."""
+    """ Provides created and updated timestamps on models. """
 
     created = models.DateTimeField(null=True, editable=False)
     updated = models.DateTimeField(null=True, editable=False)
@@ -41,7 +41,7 @@ class KeyValue(models.Model):
 
 
 class TaggedItem(TimeStamped):
-    """Binds tags with items."""
+    """ Binds tags with generic models. """
     tag = models.ForeignKey(Tag, related_name='items', null=True)
     object_id = models.IntegerField(db_index=True)
     content_type = models.ForeignKey(ContentType)
