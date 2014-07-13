@@ -76,18 +76,12 @@ class TagManager(models.Manager):
             item_tags = self.CACHE.get('item_tags')
 
             if tags is None:
-                print "missed cache for tags"
                 tags = self.populate_tags_dictionary()
                 self.CACHE.set('tags', tags)
-            else:
-                print "hit cache for tags"
 
             if item_tags is None:
-                print "missed cache for item_tags"
                 item_tags = self.populate_item_tag_lists_dictionary()
                 self.CACHE.set('item_tags', item_tags)
-            else:
-                print "hit cache for item_tags"
 
             if c_type in item_tags and obj.id in item_tags[c_type]:
                 for tag_id in item_tags[c_type][obj.id]:
