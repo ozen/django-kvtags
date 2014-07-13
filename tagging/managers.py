@@ -95,7 +95,8 @@ class TagManager(models.Manager):
         else:
             tag_ids = TaggedItem.objects.filter(content_type=c_type, object_id=obj.id).values('tag')
             for tag in Tag.objects.filter(pk__in=tag_ids):
-                obj = {'id': tag.id, 'key': tag.key}
+                # TODO: Remove 'value' field as it is only to not break old Imagiality code.
+                obj = {'id': tag.id, 'key': tag.key, 'value':""}
                 for key_value in tag.kv_pairs.all():
                     obj[key_value.key] = key_value.value
                 ret.append(obj)
