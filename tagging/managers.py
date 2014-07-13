@@ -108,7 +108,7 @@ class TagManager(models.Manager):
         """ Builds a dictionary for tags whose keys are tag IDs and values are digest tag objects. """
         tags = {}
         for tag in Tag.objects.select_related().prefetch_related('kv_pairs').all():
-            obj = {'id': tag.id, 'key': tag.key}
+            obj = {'id': tag.id, 'key': tag.key, 'tags':[]}
             for key_value in tag.kv_pairs.all():
                 obj[key_value.key] = key_value.value
             tags[tag.id] = obj
