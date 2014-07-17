@@ -10,7 +10,7 @@ except ImportError:
 
 setup(
     name='django-tagging',
-    version='1.2.0',
+    version='1.3.0',
     description='Multilingual tagging system for Django',
     author='Yigit Ozen',
     license='MIT',
@@ -20,7 +20,6 @@ setup(
         'tagging.management.commands',
         ],
     requires=[
-        'Django (>=1.5)',
         'unicodecsv (>=0.9.4)'
     ],
     package_data={'tagging': ['templates/*']},
