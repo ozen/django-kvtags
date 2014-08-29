@@ -2,31 +2,62 @@
 django-tagging
 ===============
 
-Grouped tagging system for Django.
+Extensible tags in Django.
 
-Tags have keys and groups, so that you can link several tags together.
+Tags can be associated with any django model. You can add any number of key-value pairs to the tags as you need.
 
-This is especially useful for adding translations of tags without
-modifying relations between tagged items.
 
 TagManager
 ============
 
-django-tagging is meant to be used via TagManager.
-First, add TagManager to your model to which you will add tags;
+The best way to use django-tagging is through TagManager.
+First, add TagManager to your model to which you will add tags:
 
 ::
 
-    class Fabric(TimeStamped):
+    class YourModel(models.Model):
         # your stuff
         objects = models.Manager()
         tags = TagManager()
 
+If you want django-tagging to use cache when it's available, pass the cache name with cache parameter to TagManager:
 
-Then use it to add, remove and filter tags.
+::
+    class YourModel(models.Model):
+        # your stuff
+        objects = models.Manager()
+        tags = TagManager(cache='default')
 
-TODO: methods
+
+
+add (obj, \**kwargs)
+-----------------------
+Adds tags matched by kwargs to obj.
+
+add_by_kv (obj, \**kwargs)
+-----------------------------
+Adds tags whose key-values are matched by kwargs to obj.
+
+remove (obj, \**kwargs)
+-------------------------
+Removes tags matched by kwargs from obj.
+
+remove_by_kv (obj, \**kwargs)
+-------------------------------
+Removes tags whose key-values are matched by kwargs from obj.
+
+filter (obj, \**kwargs)
+------------------------
+Returns QuerySet of Tags bound to obj and matched by kwargs.
+
+get_list (obj)
 --------------
+Returns a list of Tag model instances bound to obj
+
+get_digest_list (self, obj)
+---------------------------
+Returns a list of objects which contains digested data of Tags bound to obj.
+If cache is available and set, this method stores tag and item-tag dictionaries in the cache in order to make a lot less SQL queries. 
 
 
 Using API
@@ -93,6 +124,19 @@ Example:
             Egg: EggResource
         }, 'content_object')
 
+
+Adding Tags Field to a Resource
+===================================
+If you want to add the tags associated with a model to the model's resource, you can do that by using get_list or get_digest_list methods as follow:
+
+::
+
+    class YourModelResource(ModelResource):
+        # your stuff
+        tags = fields.ListField()
+        
+        def dehydrate_tags(self, bundle):
+            return YourModel.tags.get_digest_list(bundle.obj)
 
 
 .. _tastypie: https://django-tastypie.readthedocs.org/en/latest/
