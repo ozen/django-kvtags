@@ -23,6 +23,7 @@ First, add TagManager to your model to which you will add tags:
 If you want django-tagging to use cache when it's available, pass the cache name with cache parameter to TagManager:
 
 ::
+
     class YourModel(models.Model):
         # your stuff
         objects = models.Manager()
