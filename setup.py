@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='django-tagging',
-    version='1.3.1',
+    version='1.3.2',
     description='Multilingual tagging system for Django',
     author='Yigit Ozen',
     license='MIT',
@@ -23,5 +23,4 @@ setup(
         'unicodecsv (>=0.9.4)'
     ],
     package_data={'tagging': ['templates/*']},
-    data_files=[("", ["LICENSE", "README.rst"])],
 )
