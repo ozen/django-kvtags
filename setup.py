@@ -7,7 +7,6 @@ except ImportError:
     use_setuptools()
     from setuptools import setup
 
-
 setup(
     name='django-tagging',
     version='1.3.0',
@@ -16,6 +15,7 @@ setup(
     license='MIT',
     packages=[
         'tagging',
+        'tagging.migrations',
         'tagging.management',
         'tagging.management.commands',
         ],
@@ -25,4 +25,3 @@ setup(
     package_data={'tagging': ['templates/*']},
     data_files=[("", ["LICENSE", "README.rst"])],
 )
-
