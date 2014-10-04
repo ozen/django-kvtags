@@ -9,8 +9,8 @@ except ImportError:
 
 setup(
     name='django-tagging',
-    version='1.3.2',
-    description='Multilingual tagging system for Django',
+    version='1.3.3',
+    description='Extensible tags in Django',
     author='Yigit Ozen',
     license='MIT',
     packages=[

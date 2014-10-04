@@ -71,6 +71,29 @@ class TagManager(models.Manager):
 
         return ret
 
+    def get_id_list(self, obj):
+        """ Returns a list of IDs of Tags bound to obj. """
+        c_type = ContentType.objects.get_for_model(obj)
+
+        if self.CACHE:
+            item_tags = self.CACHE.get('item_tags')
+
+            if item_tags is None:
+                item_tags = self.build_item_tag_lists_dictionary()
+                self.CACHE.set('item_tags', item_tags)
+
+            if c_type in item_tags and obj.id in item_tags[c_type]:
+                return item_tags[c_type][obj.id]
+            else:
+                return []
+
+        else:
+            ret = []
+            tags = TaggedItem.objects.filter(content_type=c_type, object_id=obj.id).values_list('tag', flat=True)
+            for tag in tags:
+                ret.append(tag)
+            return ret
+
     def get_digest_list(self, obj):
         """ Returns a list of objects which contains digested data of Tags bound to obj. """
         c_type = ContentType.objects.get_for_model(obj)
@@ -108,6 +131,7 @@ class TagManager(models.Manager):
         """ Builds a dictionary for tags whose keys are tag IDs and values are digest tag objects. """
         tags = {}
         for tag in Tag.objects.select_related().prefetch_related('kv_pairs').all():
+            # TODO: Remove 'tags' field as it is only to not break old Imagiality code.
             obj = {'id': tag.id, 'key': tag.key, 'tags':[]}
             for key_value in tag.kv_pairs.all():
                 obj[key_value.key] = key_value.value
