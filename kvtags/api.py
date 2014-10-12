@@ -5,7 +5,7 @@ from kvtags.models import *
 
 
 class TagResource(ModelResource):
-    kv_pairs = fields.ToManyField('tagging.api.KeyValueResource', 'kv_pairs', full=True)
+    kv_pairs = fields.ToManyField('kvtags.api.KeyValueResource', 'kv_pairs', full=True)
 
     class Meta:
         queryset = Tag.objects.all()

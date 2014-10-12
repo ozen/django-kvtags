@@ -1,5 +1,5 @@
 ===============
-django-tagging
+django-kvtags
 ===============
 
 Extensible tags in Django.
@@ -10,7 +10,7 @@ Tags can be associated with any django model. You can add any number of key-valu
 TagManager
 ============
 
-The best way to use django-tagging is through TagManager.
+The best way to use django-kvtags is through TagManager.
 First, add TagManager to your model to which you will add tags:
 
 ::
@@ -20,7 +20,7 @@ First, add TagManager to your model to which you will add tags:
         objects = models.Manager()
         tags = TagManager()
 
-If you want django-tagging to use cache when it's available, pass the cache name with cache parameter to TagManager:
+If you want django-kvtags to use cache when it's available, pass the cache name with cache parameter to TagManager:
 
 ::
 
@@ -64,7 +64,7 @@ If cache is available and set, this method stores tag and item-tag dictionaries 
 Using API
 ============
 
-django-tagging supports `tastypie`_.
+django-kvtags supports `tastypie`_.
 
 TagResource
 -------------
@@ -72,7 +72,7 @@ TagResource
 ::
 
     # urls.py
-    from tagging.api import TagResource
+    from kvtags.api import TagResource
 
     tag_resource = TagResource()
 
@@ -87,7 +87,7 @@ or
 
     # urls.py
     from tastypie.api import Api
-    from tagging.api import TagResource
+    from kvtags.api import TagResource
 
     your_api = Api(api_name='v1')
     # Your other resources
@@ -114,7 +114,7 @@ Example:
 ::
 
     # urls.py
-    from tagging.api import TaggedItemResource
+    from kvtags.api import TaggedItemResource
     from tastypie.contrib.contenttypes.fields import GenericForeignKeyField
     from yourapp.models import Spam, Egg
     from yourapp.api import SpamResource, EggResource

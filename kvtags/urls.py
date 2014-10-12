@@ -3,5 +3,5 @@ from kvtags import views
 
 
 urlpatterns = [
-    url(r'^import-tags/$', views.import_tags, name='tagging_import_tags'),
+    url(r'^import-tags/$', views.import_tags, name='kvtags_import_tags'),
 ]

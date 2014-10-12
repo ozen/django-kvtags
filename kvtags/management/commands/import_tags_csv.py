@@ -3,7 +3,7 @@ from kvtags.utils import import_tags_csv
 
 
 class Command(BaseCommand):
-    """Provides command interface to tagging.utils.import_tags_csv"""
+    """Provides command interface to utils.import_tags_csv"""
     args = '<csv_file>'
     help = 'Imports tags from csv file to database'
 
