@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from tagging.utils import import_tags_csv
+from kvtags.utils import import_tags_csv
 
 
 class Command(BaseCommand):

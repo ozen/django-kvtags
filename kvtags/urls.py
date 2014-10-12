@@ -1,6 +1,5 @@
 from django.conf.urls import url
-
-from tagging import views
+from kvtags import views
 
 
 urlpatterns = [

@@ -1,26 +1,20 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 try:
-    from setuptools import setup
+    from setuptools import setup, find_packages
 except ImportError:
     from ez_setup import use_setuptools
     use_setuptools()
-    from setuptools import setup
+    from setuptools import setup, find_packages
 
 setup(
-    name='django-tagging',
-    version='1.3.3',
-    description='Extensible tags in Django',
+    name='django-kvtags',
+    version='1.4.0',
+    description='Extensible key-value tagging for Django',
     author='Yigit Ozen',
     license='MIT',
-    packages=[
-        'tagging',
-        'tagging.migrations',
-        'tagging.management',
-        'tagging.management.commands',
-        ],
-    requires=[
-        'unicodecsv (>=0.9.4)'
+    packages=find_packages(),
+    install_requires=[
+        'django>=1.5',
+        'unicodecsv>=0.9.4',
     ],
-    package_data={'tagging': ['templates/*']},
+    package_data={'kvtags': ['templates/*']},
 )

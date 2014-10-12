@@ -1,6 +1,6 @@
 from django.core.cache import get_cache
 from django.core.cache.backends.base import InvalidCacheBackendError
-from tagging.models import *
+from kvtags.models import *
 
 
 class TagManager(models.Manager):

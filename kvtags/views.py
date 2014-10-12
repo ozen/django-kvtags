@@ -3,9 +3,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-
-from tagging.forms import ImportTagsForm
-from tagging.utils import import_tags_csv
+from kvtags.forms import ImportTagsForm
+from kvtags.utils import import_tags_csv
 
 
 def import_tags(request):

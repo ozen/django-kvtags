@@ -1,6 +1,5 @@
 import unicodecsv
-
-from tagging.models import *
+from kvtags.models import *
 
 
 def import_tags_csv(csv_file):

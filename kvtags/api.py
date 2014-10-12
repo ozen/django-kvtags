@@ -1,7 +1,7 @@
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL
 from tastypie import fields
-from tagging.models import *
+from kvtags.models import *
 
 
 class TagResource(ModelResource):
