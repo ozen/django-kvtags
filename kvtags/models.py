@@ -27,6 +27,9 @@ class Tag(TimeStamped):
     def __unicode__(self):
         return u"%s %d" % (self.key, self.pk)
 
+    def add_kv(self, key, value):
+        return KeyValue.objects.get_or_create(tag=self, key=key, value=value)
+
 
 class KeyValue(models.Model):
     tag = models.ForeignKey(Tag, related_name='kv_pairs', db_index=True)
