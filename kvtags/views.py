@@ -3,10 +3,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from kvtags.forms import ImportTagsForm
 from kvtags.utils import import_tags_csv
 
 
+@staff_member_required
 def import_tags(request):
     """Provides graphical interface to utils.import_tags_csv"""
     if request.method == 'POST':

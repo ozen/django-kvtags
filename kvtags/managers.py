@@ -76,11 +76,11 @@ class TagManager(models.Manager):
         c_type = ContentType.objects.get_for_model(obj)
 
         if self.CACHE:
-            item_tags = self.CACHE.get('item_tags')
+            item_tags = self.CACHE.get('kvtags_item_tags')
 
             if item_tags is None:
                 item_tags = self.build_item_tag_lists_dictionary()
-                self.CACHE.set('item_tags', item_tags)
+                self.CACHE.set('kvtags_item_tags', item_tags)
 
             if c_type in item_tags and obj.id in item_tags[c_type]:
                 return item_tags[c_type][obj.id]
@@ -100,16 +100,16 @@ class TagManager(models.Manager):
         ret = []
 
         if self.CACHE:
-            tags = self.CACHE.get('tags')
-            item_tags = self.CACHE.get('item_tags')
+            tags = self.CACHE.get('kvtags_tags')
+            item_tags = self.CACHE.get('kvtags_item_tags')
 
             if tags is None:
                 tags = self.build_tags_dictionary()
-                self.CACHE.set('tags', tags)
+                self.CACHE.set('kvtags_tags', tags)
 
             if item_tags is None:
                 item_tags = self.build_item_tag_lists_dictionary()
-                self.CACHE.set('item_tags', item_tags)
+                self.CACHE.set('kvtags_item_tags', item_tags)
 
             if c_type in item_tags and obj.id in item_tags[c_type]:
                 for tag_id in item_tags[c_type][obj.id]:

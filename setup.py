@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='django-kvtags',
-    version='1.5.0',
+    version='1.5.1',
     description='Extensible key-value tagging for Django',
     author='Yigit Ozen',
     license='MIT',

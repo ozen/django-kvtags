@@ -1,14 +1,14 @@
-===============
+=============
 django-kvtags
-===============
+=============
 
 Extensible tags in Django.
 
-Tags can be associated with any django model. You can add any number of key-value pairs to the tags as you need.
+Tags can be associated with any django model. You can add as many key-value pairs to the tags as you wish.
 
 
 TagManager
-============
+==========
 
 The best way to use django-kvtags is through TagManager.
 First, add TagManager to your model to which you will add tags:
@@ -20,7 +20,7 @@ First, add TagManager to your model to which you will add tags:
         objects = models.Manager()
         tags = TagManager()
 
-If you want django-kvtags to use cache when it's available, pass the cache name with cache parameter to TagManager:
+If you want django-kvtags to use cache when it's possible, pass the cache name with cache parameter to TagManager:
 
 ::
 
@@ -32,28 +32,32 @@ If you want django-kvtags to use cache when it's available, pass the cache name 
 
 
 add (obj, \**kwargs)
------------------------
+--------------------
 Adds tags matched by kwargs to obj.
 
 add_by_kv (obj, \**kwargs)
------------------------------
+--------------------------
 Adds tags whose key-values are matched by kwargs to obj.
 
 remove (obj, \**kwargs)
--------------------------
+-----------------------
 Removes tags matched by kwargs from obj.
 
 remove_by_kv (obj, \**kwargs)
--------------------------------
+-----------------------------
 Removes tags whose key-values are matched by kwargs from obj.
 
 filter (obj, \**kwargs)
-------------------------
+-----------------------
 Returns QuerySet of Tags bound to obj and matched by kwargs.
 
 get_list (obj)
 --------------
 Returns a list of Tag model instances bound to obj
+
+get_id_list (obj)
+-----------------
+Returns a list of IDs of Tags bound to obj
 
 get_digest_list (self, obj)
 ---------------------------
@@ -62,12 +66,12 @@ If cache is available and set, this method stores tag and item-tag dictionaries 
 
 
 Using API
-============
+=========
 
 django-kvtags supports `tastypie`_.
 
 TagResource
--------------
+-----------
 
 ::
 
@@ -127,7 +131,7 @@ Example:
 
 
 Adding Tags Field to a Resource
-===================================
+===============================
 If you want to add the tags associated with a model to the model's resource, you can do that by using get_list or get_digest_list methods as follow:
 
 ::
